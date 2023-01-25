@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+    <TechLevelProgression.Letters.TLIncreased.Title>Tech Level Increased</TechLevelProgression.Letters.TLIncreased.Title>
+    <TechLevelProgression.Letters.TLIncreased.Text>Faction tech level increased to {0}</TechLevelProgression.Letters.TLIncreased.Text>
+    
+    <TechLevelProgression.Settings.Title>Tech Level Progression</TechLevelProgression.Settings.Title>
+    <TechLevelProgression.Settings.ResearchPercent.Label>Requires {0} finished research to progress to the next tech level</TechLevelProgression.Settings.ResearchPercent.Label>
+
+</LanguageData>
