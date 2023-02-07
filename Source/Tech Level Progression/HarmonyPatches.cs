@@ -20,21 +20,14 @@ namespace TechLevelProgression
             patchType = typeof(HarmonyPatches);
             progress = AccessTools.FieldRefAccess<Dictionary<ResearchProjectDef, float>>(typeof(ResearchManager), "progress");
             Harmony val = new Harmony("rimworld.mrhydralisk.techlevelprogression");
-            val.Patch((MethodBase)AccessTools.Method(typeof(ResearchManager), "FinishProject", new Type[] { typeof(ResearchProjectDef), typeof(bool), typeof(Pawn)
-#if v1_4
-                , typeof(bool)
-#endif
-            }, (Type[])null), (HarmonyMethod)null, new HarmonyMethod(patchType, "FinishProject_Postfix", (Type[])null), (HarmonyMethod)null, (HarmonyMethod)null);
+            val.Patch((MethodBase)AccessTools.Method(typeof(ResearchManager), "ReapplyAllMods", (Type[])null, (Type[])null), (HarmonyMethod)null, new HarmonyMethod(patchType, "ReapplyAllMods_Postfix", (Type[])null), (HarmonyMethod)null, (HarmonyMethod)null);
         }
 
-        public static void FinishProject_Postfix(ResearchProjectDef proj, bool doCompletionDialog, Pawn researcher,
-#if v1_4
-            bool doCompletionLetter,
-#endif
-            ResearchManager __instance)
+        public static void ReapplyAllMods_Postfix(ResearchManager __instance)
         {
             TechLevel currTechLevel = Faction.OfPlayer.def.techLevel;
-            IEnumerable<TechLevel> leftTechLevels = Enum.GetValues(typeof(TechLevel)).Cast<TechLevel>().Where((TechLevel tl) => (int)tl > (int)currTechLevel).OrderByDescending((TechLevel tl) => tl);
+            IEnumerable<TechLevel> leftTechLevels = Enum.GetValues(typeof(TechLevel)).Cast<TechLevel>().OrderByDescending((TechLevel tl) => tl);
+            bool isAnimalTL = true;
             foreach (TechLevel tl in leftTechLevels)
             {
                 int currR = -1, allR = -1;
@@ -43,11 +36,18 @@ namespace TechLevelProgression
                 allR = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
                 if ((currR > 0) && (allR > 0) && (currR / (float)allR >= TechLevelProgressionMod.Settings.ResearchPercent))
                 {
+                    isAnimalTL = false;
                     Faction.OfPlayer.def.techLevel = tl;
-                    Find.LetterStack.ReceiveLetter("TechLevelProgression.Letters.TLIncreased.Title".Translate(), "TechLevelProgression.Letters.TLIncreased.Text".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()), LetterDefOf.NeutralEvent);
+                    if ((int)tl > (int)currTechLevel)
+                        Find.LetterStack.ReceiveLetter("TechLevelProgression.Letters.TLIncreased.Title".Translate(), "TechLevelProgression.Letters.TLIncreased.Text".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()), LetterDefOf.NeutralEvent);
                     break;
                 }
             }
+            if (isAnimalTL)
+            {
+                Faction.OfPlayer.def.techLevel = TechLevel.Animal;
+            }
+            Log.Message("Current tech level " + Faction.OfPlayer.def.techLevel.ToStringSafe());
         }
     }
 }
