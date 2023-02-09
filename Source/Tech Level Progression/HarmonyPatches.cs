@@ -28,6 +28,11 @@ namespace TechLevelProgression
             TechLevel currTechLevel = Faction.OfPlayer.def.techLevel;
             IEnumerable<TechLevel> leftTechLevels = Enum.GetValues(typeof(TechLevel)).Cast<TechLevel>().OrderByDescending((TechLevel tl) => tl);
             bool isAnimalTL = true;
+            if (!TechLevelProgressionMod.Settings.TechLevelDecrease)
+            {
+                isAnimalTL = false;
+                leftTechLevels = leftTechLevels.Where((TechLevel tl) => (int)tl > (int)currTechLevel);
+            }
             foreach (TechLevel tl in leftTechLevels)
             {
                 int currR = -1, allR = -1;

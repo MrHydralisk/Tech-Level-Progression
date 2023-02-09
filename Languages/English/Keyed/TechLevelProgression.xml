@@ -6,5 +6,6 @@
     
     <TechLevelProgression.Settings.Title>Tech Level Progression</TechLevelProgression.Settings.Title>
     <TechLevelProgression.Settings.ResearchPercent.Label>Requires {0} finished research to progress to the next tech level</TechLevelProgression.Settings.ResearchPercent.Label>
+    <TechLevelProgression.Settings.TechLevelDecrease.Label>Tech Level can become lower, if the threshold for current level is not reached</TechLevelProgression.Settings.TechLevelDecrease.Label>
 
 </LanguageData>

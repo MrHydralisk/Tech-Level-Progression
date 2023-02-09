@@ -20,6 +20,7 @@ namespace TechLevelProgression
             options.Begin(inRect);
             options.Label("TechLevelProgression.Settings.ResearchPercent.Label".Translate(Settings.ResearchPercent.ToStringPercent()));
             Settings.ResearchPercent = options.Slider(Settings.ResearchPercent, 0.01f, 1f);
+            options.CheckboxLabeled("TechLevelProgression.Settings.TechLevelDecrease.Label".Translate().RawText, ref Settings.TechLevelDecrease);
             options.End();
         }
 
