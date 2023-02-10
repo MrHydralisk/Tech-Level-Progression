@@ -33,12 +33,14 @@ namespace TechLevelProgression
                 isAnimalTL = false;
                 leftTechLevels = leftTechLevels.Where((TechLevel tl) => (int)tl > (int)currTechLevel);
             }
+            string tlprogress = "";
             foreach (TechLevel tl in leftTechLevels)
             {
                 int currR = -1, allR = -1;
                 ref Dictionary<ResearchProjectDef, float> reference = ref progress.Invoke((object)__instance);
                 currR = reference.Count(rp => rp.Key.techLevel == tl && rp.Key.IsFinished);
                 allR = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
+                tlprogress += "\n" + tl.ToStringSafe() + " progress " + currR.ToStringSafe() + " / " + allR.ToStringSafe();
                 if ((currR > 0) && (allR > 0) && (currR / (float)allR >= TechLevelProgressionMod.Settings.ResearchPercent))
                 {
                     isAnimalTL = false;
@@ -52,7 +54,7 @@ namespace TechLevelProgression
             {
                 Faction.OfPlayer.def.techLevel = TechLevel.Animal;
             }
-            Log.Message("Current tech level " + Faction.OfPlayer.def.techLevel.ToStringSafe());
+            Log.Message("Current tech level " + Faction.OfPlayer.def.techLevel.ToStringSafe() + tlprogress);
         }
     }
 }
