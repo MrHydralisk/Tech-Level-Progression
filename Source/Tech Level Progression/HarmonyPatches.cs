@@ -41,7 +41,7 @@ namespace TechLevelProgression
                 currR = reference.Count(rp => rp.Key.techLevel == tl && rp.Key.IsFinished);
                 allR = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
                 tlprogress += "\n" + tl.ToStringSafe() + " progress " + currR.ToStringSafe() + " / " + allR.ToStringSafe();
-                if ((currR > 0) && (allR > 0) && (currR / (float)allR >= TechLevelProgressionMod.Settings.ResearchPercent))
+                if ((currR > 0) && (allR > 0) && (currR / (float)allR >= (TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent)))
                 {
                     isAnimalTL = false;
                     Faction.OfPlayer.def.techLevel = tl;
