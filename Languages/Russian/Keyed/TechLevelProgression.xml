@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+    <TechLevelProgression.Letters.TLIncreased.Title>Технологический уровень повышен</TechLevelProgression.Letters.TLIncreased.Title>
+    <TechLevelProgression.Letters.TLIncreased.Text>Технологический уровень фракции повышен до {0}</TechLevelProgression.Letters.TLIncreased.Text>
+    
+    <TechLevelProgression.Settings.Title>Tech Level Progression</TechLevelProgression.Settings.Title>
+    <TechLevelProgression.Settings.ResearchPercent.Label>Требуется {0} завершённых исследований технологии для перехода на следующий уровень технологического прогресса</TechLevelProgression.Settings.ResearchPercent.Label>
+    <TechLevelProgression.Settings.TechLevelDecrease.Label>Технологический уровень может стать ниже, если не достигнут порог текущего уровня</TechLevelProgression.Settings.TechLevelDecrease.Label>
+    <TechLevelProgression.Settings.TechLevelPrecise.Label>Будут использованы точные пороговые значения для каждого технологического уровня по отдельности</TechLevelProgression.Settings.TechLevelPrecise.Label>
+    <TechLevelProgression.Settings.ResearchPercentPrecise.Label>Пороговое значение технологического уровеня "{0}": {1} ({2}/{3})</TechLevelProgression.Settings.ResearchPercentPrecise.Label>
+
+</LanguageData>
