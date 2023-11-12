@@ -23,6 +23,8 @@ namespace TechLevelProgression
             options.Label("TechLevelProgression.Settings.ResearchPercent.Label".Translate(Settings.ResearchPercent.ToStringPercent()));
             Settings.ResearchPercent = options.Slider(Settings.ResearchPercent, 0.01f, 1f);
             options.CheckboxLabeled("TechLevelProgression.Settings.TechLevelDecrease.Label".Translate().RawText, ref Settings.TechLevelDecrease);
+            options.Label("TechLevelProgression.Settings.TechLevelRange.Label".Translate(((TechLevel)Settings.TechLevelRange.min).ToStringSafe(), ((TechLevel)Settings.TechLevelRange.max).ToStringSafe()));
+            options.IntRange(ref Settings.TechLevelRange, (int)TechLevel.Animal, (int)TechLevel.Ultra);
             options.CheckboxLabeled("TechLevelProgression.Settings.TechLevelPrecise.Label".Translate().RawText, ref Settings.TechLevelPrecise);
             foreach(TechLevel tl in Enum.GetValues(typeof(TechLevel)))
             {

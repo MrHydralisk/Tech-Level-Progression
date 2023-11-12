@@ -5,6 +5,7 @@ using System.Linq;
 using Verse;
 using System.Reflection;
 using RimWorld;
+using UnityEngine;
 
 namespace TechLevelProgression
 {
@@ -44,7 +45,7 @@ namespace TechLevelProgression
                 if ((currR > 0) && (allR > 0) && (currR / (float)allR >= (TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent)))
                 {
                     isAnimalTL = false;
-                    Faction.OfPlayer.def.techLevel = tl;
+                    Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Min((byte)TechLevelProgressionMod.Settings.TechLevelRange.max, (byte)tl);
                     if ((int)tl > (int)currTechLevel)
                         Find.LetterStack.ReceiveLetter("TechLevelProgression.Letters.TLIncreased.Title".Translate(), "TechLevelProgression.Letters.TLIncreased.Text".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()), LetterDefOf.NeutralEvent);
                     break;
@@ -52,7 +53,7 @@ namespace TechLevelProgression
             }
             if (isAnimalTL)
             {
-                Faction.OfPlayer.def.techLevel = TechLevel.Animal;
+                Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Max((byte)TechLevelProgressionMod.Settings.TechLevelRange.min, (byte)TechLevel.Animal);
             }
             Log.Message("Current tech level " + Faction.OfPlayer.def.techLevel.ToStringSafe() + tlprogress);
         }

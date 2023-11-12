@@ -7,6 +7,7 @@
     <TechLevelProgression.Settings.Title>Tech Level Progression</TechLevelProgression.Settings.Title>
     <TechLevelProgression.Settings.ResearchPercent.Label>Требуется {0} завершённых исследований технологии для перехода на следующий уровень технологического прогресса</TechLevelProgression.Settings.ResearchPercent.Label>
     <TechLevelProgression.Settings.TechLevelDecrease.Label>Технологический уровень может стать ниже, если не достигнут порог текущего уровня</TechLevelProgression.Settings.TechLevelDecrease.Label>
+    <TechLevelProgression.Settings.TechLevelRange.Label>Удерживать технологический уровень между {0} и {1}</TechLevelProgression.Settings.TechLevelRange.Label>
     <TechLevelProgression.Settings.TechLevelPrecise.Label>Будут использованы точные пороговые значения для каждого технологического уровня по отдельности</TechLevelProgression.Settings.TechLevelPrecise.Label>
     <TechLevelProgression.Settings.ResearchPercentPrecise.Label>Пороговое значение технологического уровеня "{0}": {1} ({2}/{3})</TechLevelProgression.Settings.ResearchPercentPrecise.Label>
 
