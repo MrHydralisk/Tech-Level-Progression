@@ -10,7 +10,7 @@ namespace TechLevelProgression
         public List<float> ResearchPercentPrecise = new List<float>() { 0.25f, 0.25f, 0.5f, 0.5f, 0.6f, 0.65f, 0.75f, 0.75f};
         public bool TechLevelDecrease = true;
         public bool TechLevelPrecise = false;
-        public IntRange TechLevelRange = new IntRange((int)TechLevel.Animal, (int)TechLevel.Ultra);
+        public IntRange TechLevelRange = new IntRange((int)TechLevel.Animal, (int)TechLevel.Archotech);
 
         public override void ExposeData()
         {
@@ -19,7 +19,7 @@ namespace TechLevelProgression
             Scribe_Collections.Look(ref ResearchPercentPrecise, "ResearchPercentPrecise", LookMode.Value);
             Scribe_Values.Look(ref TechLevelDecrease, "TechLevelDecrease", defaultValue: true);
             Scribe_Values.Look(ref TechLevelPrecise, "TechLevelPrecise", defaultValue: false);
-            Scribe_Values.Look(ref TechLevelRange, "TechLevelRange", defaultValue: new IntRange((int)TechLevel.Animal, (int)TechLevel.Ultra));
+            Scribe_Values.Look(ref TechLevelRange, "TechLevelRange", defaultValue: new IntRange((int)TechLevel.Animal, (int)TechLevel.Archotech));
         }
     }
 }
