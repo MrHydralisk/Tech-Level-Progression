@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Manifest>
-  <identifier>MrHydralisk.TechLevelProgression</identifier>
-  <version>1.4.1.0</version>
-  <dependencies>
-    <li>brrainz.harmony</li>
-  </dependencies>
-  <showCrossPromotions>true</showCrossPromotions>
+	<identifier>MrHydralisk.TechLevelProgression</identifier>
+	<version>1.5.0.0</version>
+	<dependencies>
+		<li>brrainz.harmony</li>
+	</dependencies>
+	<suggests>
+		<li>MrHydralisk.VOEAdditionalOutposts</li>
+		<li>MrHydralisk.UndergroundVault</li>
+		<li>MrHydralisk.GlitterworldMedicineProduction</li>
+		<li>MrHydralisk.SynthreadProduction</li>
+		<li>MrHydralisk.HyperweaveProduction</li>
+		<li>MrHydralisk.NeutroamineProduction</li>
+	</suggests>
+	<showCrossPromotions>true</showCrossPromotions>
 </Manifest>
