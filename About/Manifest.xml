@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Manifest>
 	<identifier>MrHydralisk.TechLevelProgression</identifier>
-	<version>1.5.0.0</version>
+	<version>1.6.0.0</version>
 	<dependencies>
 		<li>brrainz.harmony</li>
 	</dependencies>
 	<suggests>
 		<li>MrHydralisk.VOEAdditionalOutposts</li>
 		<li>MrHydralisk.UndergroundVault</li>
+		<li>MrHydralisk.AnomaliesExpected</li>
 		<li>MrHydralisk.GlitterworldMedicineProduction</li>
 		<li>MrHydralisk.SynthreadProduction</li>
 		<li>MrHydralisk.HyperweaveProduction</li>
