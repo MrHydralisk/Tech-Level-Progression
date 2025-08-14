@@ -1,11 +1,12 @@
 ﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Verse;
 using System.Reflection;
-using RimWorld;
+using System.Reflection.Emit;
 using UnityEngine;
+using Verse;
 
 namespace TechLevelProgression
 {
@@ -25,6 +26,7 @@ namespace TechLevelProgression
             val.Patch(AccessTools.Method(typeof(ResearchProjectDef), "CostFactor"), prefix: new HarmonyMethod(patchType, "RPD_CostFactor_Prefix"));
             val.Patch(AccessTools.Property(typeof(ResearchProjectDef), "CostApparent").GetGetMethod(), postfix: new HarmonyMethod(patchType, "RPD_CostApparent_Postfix"));
             val.Patch(AccessTools.Property(typeof(ResearchProjectDef), "ProgressApparent").GetGetMethod(), postfix: new HarmonyMethod(patchType, "RPD_CostApparent_Postfix"));
+            val.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawProjectScrollView"), transpiler: new HarmonyMethod(patchType, "MTWR_DrawProjectScrollView_Transpiler"));
         }
 
         public static void ReapplyAllMods_Postfix(ResearchManager __instance)
@@ -87,6 +89,54 @@ namespace TechLevelProgression
         public static void RPD_CostApparent_Postfix(ref float __result, ResearchProjectDef __instance)
         {
             __result = Mathf.Round(__result);
+        }
+
+        public static IEnumerable<CodeInstruction> MTWR_DrawProjectScrollView_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            int startIndex = -1;
+            int endIndex = -1;
+            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            for (int i = 0; i < codes.Count - 1; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ble)
+                {
+                    codes[i].opcode = OpCodes.Beq;
+                    continue;
+                }
+                if (codes[i].opcode == OpCodes.Ldstr && (codes[i]?.operand?.ToString() ?? "") == "TechLevelTooLow")
+                {
+                    startIndex = i;
+                    continue;
+                }
+                if (startIndex > -1 && codes[i].opcode == OpCodes.Ldloca_S && (codes[i]?.operand?.ToString() ?? "") == "UnityEngine.Rect (10)")
+                {
+                    endIndex = i;
+                    break;
+                }
+            }
+            if (startIndex > -1 && endIndex > -1)
+            {
+                codes.RemoveRange(startIndex, endIndex - startIndex);
+                List<CodeInstruction> instructionsToInsert = new List<CodeInstruction>();
+                instructionsToInsert.Add(new CodeInstruction(OpCodes.Ldloc_S, 9));
+                instructionsToInsert.Add(new CodeInstruction(OpCodes.Ldarg_0));
+                instructionsToInsert.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(MainTabWindow_Research), "selectedProject")));
+                instructionsToInsert.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(HarmonyPatches), "DrawProjectScrollViewBelow")));
+                instructionsToInsert.Add(new CodeInstruction(OpCodes.Stloc_S, 11));
+                codes.InsertRange(startIndex, instructionsToInsert);
+            }
+            return codes.AsEnumerable();
+        }
+
+        public static string DrawProjectScrollViewBelow(float num, ResearchProjectDef selectedProject)
+        {
+            Log.Message($"{selectedProject.label} {(int)selectedProject.techLevel} < {(int)Faction.OfPlayer.def.techLevel}");
+            string text = "TechLevelTooLow".Translate(Faction.OfPlayer.def.techLevel.ToStringHuman(), selectedProject.techLevel.ToStringHuman(), (1f / num).ToStringPercent());
+            if (num != 1f)
+            {
+                text += " " + "ResearchCostComparison".Translate(selectedProject.Cost.ToString("F0"), selectedProject.CostApparent.ToString("F0"));
+            }
+            return text;
         }
     }
 }

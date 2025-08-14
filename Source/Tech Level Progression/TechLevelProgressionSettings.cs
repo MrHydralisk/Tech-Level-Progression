@@ -7,7 +7,7 @@ namespace TechLevelProgression
     public class TechLevelProgressionSettings : ModSettings
     {
         public float ResearchPercent = 0.75f;
-        public List<float> ResearchPercentPrecise = new List<float>() { 0.25f, 0.25f, 0.5f, 0.5f, 0.6f, 0.65f, 0.75f, 0.75f};
+        public List<float> ResearchPercentPrecise = new List<float>() { 0.25f, 0.25f, 0.5f, 0.5f, 0.6f, 0.65f, 0.75f, 0.75f };
         public bool TechLevelDecrease = true;
         public bool TechLevelPrecise = false;
         public IntRange TechLevelRange = new IntRange((int)TechLevel.Animal, (int)TechLevel.Archotech);
