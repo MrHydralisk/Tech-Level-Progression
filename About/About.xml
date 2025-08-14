@@ -10,7 +10,7 @@
 		<li>1.5</li>
 		<li>1.6</li>
 	</supportedVersions>
-	<modIconPath IgnoreIfNoMatchingField="True">Icons/ModIcon</modIconPath>
+	<modIconPath IgnoreIfNoMatchingField="True">Icons/TLP_ModIcon</modIconPath>
 	<description>Allowing to increase faction tech level after researching a sufficient number of finished projects of that level</description>
 	<modDependencies>
 		<li>
