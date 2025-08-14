@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +77,7 @@ namespace TechLevelProgression
                 Settings.ResearchPercentPrecise[(int)tl] = Mathf.Round(options.Slider(Settings.ResearchPercentPrecise[(int)tl], 0.01f, 1f) * 100f) / 100f;
             }
             options.GapLine();
+            options.CheckboxLabeled("TechLevelProgression.Settings.TechLevelScenario.Label".Translate().RawText, ref Settings.TechLevelScenario);
             options.CheckboxLabeled("TechLevelProgression.Settings.TechLevelDecrease.Label".Translate().RawText, ref Settings.TechLevelDecrease);
             options.Label("TechLevelProgression.Settings.TechLevelRange.Label".Translate(((TechLevel)Settings.TechLevelRange.min).ToStringSafe(), ((TechLevel)Settings.TechLevelRange.max).ToStringSafe()));
             options.IntRange(ref Settings.TechLevelRange, (int)TechLevel.Animal, (int)TechLevel.Archotech);
@@ -96,12 +96,12 @@ namespace TechLevelProgression
             if (Widgets.ButtonImage(rect, ModIcon, tooltip: "TechLevelProgression.TechLevelProgressReport.Tooltip".Translate()))
             {
                 List<string> progressReport = new List<string>();
-                progressReport.Add("TechLevelProgression.TechLevelProgressReport.CurrentTechLevel".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()));
+                progressReport.Add("TechLevelProgression.TechLevelProgressReport.CurrentTechLevel".Translate(GameComponent_TechLevelProgression.Instance.currTechLevel.ToStringSafe()));
                 progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReports".Translate());
                 foreach (TechLevel tl in researchProjectsTechLevel.Keys)
                 {
                     TechLevelResearch techLevelResearch = researchProjectsTechLevel[tl];
-                    progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReport".Translate(tl.ToStringSafe(), techLevelResearch.countFinished, techLevelResearch.countAll, Mathf.CeilToInt((TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent) * techLevelResearch.countAll))); 
+                    progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReport".Translate(tl.ToStringSafe(), techLevelResearch.countFinished, techLevelResearch.countAll, Mathf.CeilToInt((TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent) * techLevelResearch.countAll)));
                 }
                 Find.WindowStack.Add(new Dialog_MessageBox(String.Join("\n", progressReport)));
             }

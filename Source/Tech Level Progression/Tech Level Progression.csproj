@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="GameComponent_TechLevelProgression.cs" />
     <Compile Include="TechLevelResearch.cs" />
     <Compile Include="TechLevelProgressionMod.cs" />
     <Compile Include="TechLevelProgressionSettings.cs" />

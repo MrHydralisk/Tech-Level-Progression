@@ -3,11 +3,9 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
-using static HarmonyLib.Code;
 
 namespace TechLevelProgression
 {
@@ -34,31 +32,7 @@ namespace TechLevelProgression
 
         public static void ReapplyAllMods_Postfix(ResearchManager __instance)
         {
-            TechLevel currTechLevel = Faction.OfPlayer.def.techLevel;
-            IEnumerable<TechLevel> leftTechLevels = TechLevelProgressionMod.Instance.researchProjectsTechLevel.Keys.OrderByDescending((TechLevel tl) => tl);
-            bool isAnimalTL = true;
-            if (!TechLevelProgressionMod.Settings.TechLevelDecrease)
-            {
-                isAnimalTL = false;
-                leftTechLevels = leftTechLevels.Where((TechLevel tl) => (int)tl > (int)currTechLevel);
-            }
-            foreach (TechLevel tl in leftTechLevels)
-            {
-                TechLevelResearch techLevelResearch = TechLevelProgressionMod.Instance.researchProjectsTechLevel[tl];
-                int currR = techLevelResearch.countFinished;
-                if ((currR > 0) && (techLevelResearch.countAll > 0) && (currR >= Mathf.CeilToInt(TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent) * techLevelResearch.countAll))
-                {
-                    isAnimalTL = false;
-                    Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Min((byte)TechLevelProgressionMod.Settings.TechLevelRange.max, (byte)tl);
-                    if ((int)tl > (int)currTechLevel)
-                        Find.LetterStack.ReceiveLetter("TechLevelProgression.Letters.TLIncreased.Title".Translate(), "TechLevelProgression.Letters.TLIncreased.Text".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()), LetterDefOf.NeutralEvent);
-                    break;
-                }
-            }
-            if (isAnimalTL)
-            {
-                Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Max((byte)TechLevelProgressionMod.Settings.TechLevelRange.min, (byte)TechLevel.Animal);
-            }
+            GameComponent_TechLevelProgression.Instance.UpdateTechLevel();
         }
 
         public static bool RPD_CostFactor_Prefix(ref float __result, ResearchProjectDef __instance, TechLevel researcherTechLevel)
@@ -142,7 +116,7 @@ namespace TechLevelProgression
 
         public static void MTWR_DrawCurrentTabInfo_Postfix(MainTabWindow_Research __instance, Rect rect)
         {
-            TechLevelProgressionMod.Instance.DrawTechLevelProgress(new Rect(rect.xMax - 56f, rect.height -56f, 64f, 64f));
+            TechLevelProgressionMod.Instance.DrawTechLevelProgress(new Rect(rect.xMax - 56f, rect.height - 56f, 64f, 64f));
         }
 
         public static void MTWR_DrawProjectInfo_Postfix(MainTabWindow_Research __instance, Rect rect)
