@@ -23,6 +23,8 @@ namespace TechLevelProgression
             Harmony val = new Harmony("rimworld.mrhydralisk.techlevelprogression");
             val.Patch((MethodBase)AccessTools.Method(typeof(ResearchManager), "ReapplyAllMods", (Type[])null, (Type[])null), (HarmonyMethod)null, new HarmonyMethod(patchType, "ReapplyAllMods_Postfix", (Type[])null), (HarmonyMethod)null, (HarmonyMethod)null);
             val.Patch(AccessTools.Method(typeof(ResearchProjectDef), "CostFactor"), prefix: new HarmonyMethod(patchType, "RPD_CostFactor_Prefix"));
+            val.Patch(AccessTools.Property(typeof(ResearchProjectDef), "CostApparent").GetGetMethod(), postfix: new HarmonyMethod(patchType, "RPD_CostApparent_Postfix"));
+            val.Patch(AccessTools.Property(typeof(ResearchProjectDef), "ProgressApparent").GetGetMethod(), postfix: new HarmonyMethod(patchType, "RPD_CostApparent_Postfix"));
         }
 
         public static void ReapplyAllMods_Postfix(ResearchManager __instance)
@@ -80,6 +82,11 @@ namespace TechLevelProgression
                 __result = 1f;
             }
             return false;
+        }
+
+        public static void RPD_CostApparent_Postfix(ref float __result, ResearchProjectDef __instance)
+        {
+            __result = Mathf.Round(__result);
         }
     }
 }
