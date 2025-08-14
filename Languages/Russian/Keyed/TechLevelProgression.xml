@@ -16,5 +16,10 @@
 	
 	<TechLevelProgression.Settings.ResearchTechLevelAboveMult.Label>Установить множитель стоимости исследования за каждый технологический уровень исследовательского проекта, который выше уровня колонии на {0} [Базовая игра 50%. Формула (1+X)^Diff]</TechLevelProgression.Settings.ResearchTechLevelAboveMult.Label>
 	<TechLevelProgression.Settings.ResearchTechLevelBelowMult.Label>Установить множитель стоимости исследования за каждый технологический уровень исследовательского проекта, который ниже уровня колонии на {0} [Базовая игра 100%. Формула X^Diff]</TechLevelProgression.Settings.ResearchTechLevelBelowMult.Label>
+	
+	<TechLevelProgression.TechLevelProgressReport.CurrentTechLevel>Ваш технический уровень — {0}.</TechLevelProgression.TechLevelProgressReport.CurrentTechLevel>
+	<TechLevelProgression.TechLevelProgressReport.TechLevelReports>Текущий прогресс (текущий/всего [порог]):</TechLevelProgression.TechLevelProgressReport.TechLevelReports>
+	<TechLevelProgression.TechLevelProgressReport.TechLevelReport>- {0} прогресс {1}/{2} [{3}]</TechLevelProgression.TechLevelProgressReport.TechLevelReport>
+	<TechLevelProgression.TechLevelProgressReport.Tooltip>Показать текущий прогресс технологического уровня.</TechLevelProgression.TechLevelProgressReport.Tooltip>
 
 </LanguageData>

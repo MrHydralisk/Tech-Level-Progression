@@ -13,6 +13,30 @@ namespace TechLevelProgression
         public static TechLevelProgressionSettings Settings { get; private set; }
         public static TechLevelProgressionMod Instance { get; private set; }
 
+        public Dictionary<TechLevel, TechLevelResearch> researchProjectsTechLevel
+        {
+            get
+            {
+                if (researchProjectsTechLevelCached.NullOrEmpty())
+                {
+                    researchProjectsTechLevelCached = new Dictionary<TechLevel, TechLevelResearch>();
+                    foreach (TechLevel tl in Enum.GetValues(typeof(TechLevel)))
+                    {
+                        researchProjectsTechLevelCached.Add(tl, new TechLevelResearch(tl));
+                    }
+                    IEnumerable<ResearchProjectDef> researchProjectDefs = DefDatabase<ResearchProjectDef>.AllDefs;
+                    allDefs = researchProjectDefs.Count();
+                    foreach (var group in researchProjectDefs.GroupBy((ResearchProjectDef rpd) => rpd.techLevel))
+                    {
+                        researchProjectsTechLevelCached.SetOrAdd(group.Key, new TechLevelResearch(group.ToList()));
+                    }
+                }
+                return researchProjectsTechLevelCached;
+            }
+        }
+        private Dictionary<TechLevel, TechLevelResearch> researchProjectsTechLevelCached;
+        public int allDefs;
+
         private float prevHeight = float.MaxValue;
         private Vector2 scrollPos;
 
@@ -47,10 +71,10 @@ namespace TechLevelProgression
             Settings.ResearchPercent = Mathf.Round(options.Slider(Settings.ResearchPercent, 0.01f, 1f) * 100f) / 100f;
             options.GapLine();
             options.CheckboxLabeled("TechLevelProgression.Settings.TechLevelPrecise.Label".Translate().RawText, ref Settings.TechLevelPrecise);
-            foreach (TechLevel tl in Enum.GetValues(typeof(TechLevel)))
+            foreach (TechLevel tl in researchProjectsTechLevel.Keys)
             {
-                int TLResearchCount = GetTLResearchCount(tl);
-                options.Label("TechLevelProgression.Settings.ResearchPercentPrecise.Label".Translate(tl.ToStringSafe(), Settings.ResearchPercentPrecise[(int)tl].ToStringPercent(), Mathf.CeilToInt(Settings.ResearchPercentPrecise[(int)tl] * TLResearchCount).ToString(), TLResearchCount.ToStringSafe()));
+                TechLevelResearch techLevelResearch = researchProjectsTechLevel[tl];
+                options.Label("TechLevelProgression.Settings.ResearchPercentPrecise.Label".Translate(tl.ToStringSafe(), Settings.ResearchPercentPrecise[(int)tl].ToStringPercent(), Mathf.CeilToInt(Settings.ResearchPercentPrecise[(int)tl] * techLevelResearch.countAll).ToString(), techLevelResearch.countAll));
                 Settings.ResearchPercentPrecise[(int)tl] = Mathf.Round(options.Slider(Settings.ResearchPercentPrecise[(int)tl], 0.01f, 1f) * 100f) / 100f;
             }
             options.GapLine();
@@ -67,29 +91,17 @@ namespace TechLevelProgression
             Widgets.EndScrollView();
         }
 
-        public int GetTLResearchCount(TechLevel tl)
-        {
-            int count = 0;
-            count = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
-            return count;
-        }
-
         public void DrawTechLevelProgress(Rect rect)
         {
             if (Widgets.ButtonImage(rect, ModIcon, tooltip: "TechLevelProgression.TechLevelProgressReport.Tooltip".Translate()))
             {
-                IEnumerable<TechLevel> leftTechLevels = Enum.GetValues(typeof(TechLevel)).Cast<TechLevel>().OrderByDescending((TechLevel tl) => tl);
-                Dictionary<ResearchProjectDef, float> progress = AccessTools.Field(typeof(ResearchManager), "progress").GetValue(Find.ResearchManager) as Dictionary<ResearchProjectDef, float>;
-                List<ResearchProjectDef> researchProjectDefs = DefDatabase<ResearchProjectDef>.AllDefs.ToList();
                 List<string> progressReport = new List<string>();
                 progressReport.Add("TechLevelProgression.TechLevelProgressReport.CurrentTechLevel".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()));
                 progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReports".Translate());
-                foreach (TechLevel tl in leftTechLevels)
+                foreach (TechLevel tl in researchProjectsTechLevel.Keys)
                 {
-                    int currR = -1, allR = -1;
-                    currR = progress.Count(rp => rp.Key.techLevel == tl && rp.Key.IsFinished);
-                    allR = researchProjectDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
-                    progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReport".Translate(tl.ToStringSafe(), currR, allR)); 
+                    TechLevelResearch techLevelResearch = researchProjectsTechLevel[tl];
+                    progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReport".Translate(tl.ToStringSafe(), techLevelResearch.countFinished, techLevelResearch.countAll, Mathf.CeilToInt((TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent) * techLevelResearch.countAll))); 
                 }
                 Find.WindowStack.Add(new Dialog_MessageBox(String.Join("\n", progressReport)));
             }

@@ -35,7 +35,7 @@ namespace TechLevelProgression
         public static void ReapplyAllMods_Postfix(ResearchManager __instance)
         {
             TechLevel currTechLevel = Faction.OfPlayer.def.techLevel;
-            IEnumerable<TechLevel> leftTechLevels = Enum.GetValues(typeof(TechLevel)).Cast<TechLevel>().OrderByDescending((TechLevel tl) => tl);
+            IEnumerable<TechLevel> leftTechLevels = TechLevelProgressionMod.Instance.researchProjectsTechLevel.Keys.OrderByDescending((TechLevel tl) => tl);
             bool isAnimalTL = true;
             if (!TechLevelProgressionMod.Settings.TechLevelDecrease)
             {
@@ -44,11 +44,9 @@ namespace TechLevelProgression
             }
             foreach (TechLevel tl in leftTechLevels)
             {
-                int currR = -1, allR = -1;
-                ref Dictionary<ResearchProjectDef, float> reference = ref progress.Invoke((object)__instance);
-                currR = reference.Count(rp => rp.Key.techLevel == tl && rp.Key.IsFinished);
-                allR = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
-                if ((currR > 0) && (allR > 0) && (currR / (float)allR >= (TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent)))
+                TechLevelResearch techLevelResearch = TechLevelProgressionMod.Instance.researchProjectsTechLevel[tl];
+                int currR = techLevelResearch.countFinished;
+                if ((currR > 0) && (techLevelResearch.countAll > 0) && (currR >= Mathf.CeilToInt(TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent) * techLevelResearch.countAll))
                 {
                     isAnimalTL = false;
                     Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Min((byte)TechLevelProgressionMod.Settings.TechLevelRange.max, (byte)tl);
@@ -130,7 +128,6 @@ namespace TechLevelProgression
 
         public static string DrawProjectScrollViewBelow(float num, ResearchProjectDef selectedProject)
         {
-            Log.Message($"{selectedProject.label} {(int)selectedProject.techLevel} < {(int)Faction.OfPlayer.def.techLevel}");
             string text = "TechLevelTooLow".Translate(Faction.OfPlayer.def.techLevel.ToStringHuman(), selectedProject.techLevel.ToStringHuman(), (1f / num).ToStringPercent());
             if (num != 1f)
             {
