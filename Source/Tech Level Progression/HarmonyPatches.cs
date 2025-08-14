@@ -22,6 +22,7 @@ namespace TechLevelProgression
             progress = AccessTools.FieldRefAccess<Dictionary<ResearchProjectDef, float>>(typeof(ResearchManager), "progress");
             Harmony val = new Harmony("rimworld.mrhydralisk.techlevelprogression");
             val.Patch((MethodBase)AccessTools.Method(typeof(ResearchManager), "ReapplyAllMods", (Type[])null, (Type[])null), (HarmonyMethod)null, new HarmonyMethod(patchType, "ReapplyAllMods_Postfix", (Type[])null), (HarmonyMethod)null, (HarmonyMethod)null);
+            val.Patch(AccessTools.Method(typeof(ResearchProjectDef), "CostFactor"), prefix: new HarmonyMethod(patchType, "RPD_CostFactor_Prefix"));
         }
 
         public static void ReapplyAllMods_Postfix(ResearchManager __instance)
@@ -56,6 +57,29 @@ namespace TechLevelProgression
                 Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Max((byte)TechLevelProgressionMod.Settings.TechLevelRange.min, (byte)TechLevel.Animal);
             }
             Log.Message("Current tech level " + Faction.OfPlayer.def.techLevel.ToStringSafe() + tlprogress);
+        }
+
+        public static bool RPD_CostFactor_Prefix(ref float __result, ResearchProjectDef __instance, TechLevel researcherTechLevel)
+        {
+            if (__instance.techLevel == TechLevel.Undefined)
+            {
+                __result = 1f;
+                return false;
+            }
+            int techLevelDiff = (int)researcherTechLevel - (int)__instance.techLevel;
+            if (techLevelDiff > 0)
+            {
+                __result = Mathf.Pow(TechLevelProgressionMod.Settings.ResearchTechLevelBelowMult, techLevelDiff);
+            }
+            else if (techLevelDiff < 0)
+            {
+                __result = Mathf.Pow(1 + TechLevelProgressionMod.Settings.ResearchTechLevelAboveMult, -techLevelDiff);
+            }
+            else
+            {
+                __result = 1f;
+            }
+            return false;
         }
     }
 }

@@ -11,6 +11,8 @@ namespace TechLevelProgression
         public bool TechLevelDecrease = true;
         public bool TechLevelPrecise = false;
         public IntRange TechLevelRange = new IntRange((int)TechLevel.Animal, (int)TechLevel.Archotech);
+        public float ResearchTechLevelAboveMult = 0.5f;
+        public float ResearchTechLevelBelowMult = 0.75f;
 
         public override void ExposeData()
         {
@@ -20,6 +22,8 @@ namespace TechLevelProgression
             Scribe_Values.Look(ref TechLevelDecrease, "TechLevelDecrease", defaultValue: true);
             Scribe_Values.Look(ref TechLevelPrecise, "TechLevelPrecise", defaultValue: false);
             Scribe_Values.Look(ref TechLevelRange, "TechLevelRange", defaultValue: new IntRange((int)TechLevel.Animal, (int)TechLevel.Archotech));
+            Scribe_Values.Look(ref ResearchTechLevelAboveMult, "ResearchTechLevelAboveMult", defaultValue: 0.5f);
+            Scribe_Values.Look(ref ResearchTechLevelBelowMult, "ResearchTechLevelBelowMult", defaultValue: 0.75f);
         }
     }
 }
