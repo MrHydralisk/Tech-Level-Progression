@@ -6,10 +6,18 @@ You have researched all projects for building spaceships, but your colony still 
 
 ## Mod Contents
 
-Simple mod that changing faction's tech level based on progress in the research tree. After each research, it checks whether the number of finished projects of higher tech level exceeds the threshold (75% by default) for moving to that tech level. 
+Simple mod that changing faction's Tech Level based on progress in the research tree. After each research, it checks whether the number of finished projects of higher Tech Level exceeds the threshold (75% by default) for moving to that Tech Level. 
 
-Setting "Tech Level can become lower" will try to recalculate current level. This might bring Tech Level quite low, if you have a lot of mods with additional research projects, due to a high threshold setting.
-Also there is precise settings for each Tech Level.
+Mod setting allowing to:
+- Adjust overall threshold.
+- Adjust precise threshold for each Tech Level.
+- Adjust minimum and maximum Tech Level.
+- Adjust research project cost multiplier per each Tech Level above player faction.
+- Adjust research project cost multiplier per each Tech Level below player faction.
+- Option to align initial Tech Level on new game creation to scenario.
+- Option to recalculate Tech Level based on total progress to allow go lower than current up to Animal Tech Level.
+
+Adjust thresholds, if needed. Since this might take long time to progress, if you have a lot of mods with additional research projects, due to a high default threshold settings.
 
 ## Links
 
