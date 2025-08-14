@@ -1,5 +1,7 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -9,13 +11,29 @@ namespace TechLevelProgression
     public class TechLevelProgressionMod : Mod
     {
         public static TechLevelProgressionSettings Settings { get; private set; }
+        public static TechLevelProgressionMod Instance { get; private set; }
 
         private float prevHeight = float.MaxValue;
         private Vector2 scrollPos;
 
+        private Texture2D modIcon;
+
+        public Texture2D ModIcon
+        {
+            get
+            {
+                if (modIcon.NullOrBad())
+                {
+                    modIcon = ContentFinder<Texture2D>.Get("Icons/TLP_ModIcon");
+                }
+                return modIcon;
+            }
+        }
+
         public TechLevelProgressionMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<TechLevelProgressionSettings>();
+            Instance = this;
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -54,6 +72,27 @@ namespace TechLevelProgression
             int count = 0;
             count = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
             return count;
+        }
+
+        public void DrawTechLevelProgress(Rect rect)
+        {
+            if (Widgets.ButtonImage(rect, ModIcon, tooltip: "TechLevelProgression.TechLevelProgressReport.Tooltip".Translate()))
+            {
+                IEnumerable<TechLevel> leftTechLevels = Enum.GetValues(typeof(TechLevel)).Cast<TechLevel>().OrderByDescending((TechLevel tl) => tl);
+                Dictionary<ResearchProjectDef, float> progress = AccessTools.Field(typeof(ResearchManager), "progress").GetValue(Find.ResearchManager) as Dictionary<ResearchProjectDef, float>;
+                List<ResearchProjectDef> researchProjectDefs = DefDatabase<ResearchProjectDef>.AllDefs.ToList();
+                List<string> progressReport = new List<string>();
+                progressReport.Add("TechLevelProgression.TechLevelProgressReport.CurrentTechLevel".Translate(Faction.OfPlayer.def.techLevel.ToStringSafe()));
+                progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReports".Translate());
+                foreach (TechLevel tl in leftTechLevels)
+                {
+                    int currR = -1, allR = -1;
+                    currR = progress.Count(rp => rp.Key.techLevel == tl && rp.Key.IsFinished);
+                    allR = researchProjectDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
+                    progressReport.Add("TechLevelProgression.TechLevelProgressReport.TechLevelReport".Translate(tl.ToStringSafe(), currR, allR)); 
+                }
+                Find.WindowStack.Add(new Dialog_MessageBox(String.Join("\n", progressReport)));
+            }
         }
 
         public override string SettingsCategory()

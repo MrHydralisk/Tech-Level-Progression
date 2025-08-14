@@ -18,5 +18,10 @@
 	
 	<TechLevelProgression.Settings.ResearchTechLevelAboveMult.Label>Set multiplier of research cost per each Tech Level of research project above Tech Level of colony to {0} [Vanilla 50%. Formula (1+X)^Diff]</TechLevelProgression.Settings.ResearchTechLevelAboveMult.Label>
 	<TechLevelProgression.Settings.ResearchTechLevelBelowMult.Label>Set multiplier of research cost per each Tech Level of research project below Tech Level of colony to {0} [Vanilla 100%. Formula X^Diff]</TechLevelProgression.Settings.ResearchTechLevelBelowMult.Label>
+	
+	<TechLevelProgression.TechLevelProgressReport.CurrentTechLevel>Your faction tech level is {0}.</TechLevelProgression.TechLevelProgressReport.CurrentTechLevel>
+	<TechLevelProgression.TechLevelProgressReport.TechLevelReports>Current research progress:</TechLevelProgression.TechLevelProgressReport.TechLevelReports>
+	<TechLevelProgression.TechLevelProgressReport.TechLevelReport>- {0} progress {1}/{2}</TechLevelProgression.TechLevelProgressReport.TechLevelReport>
+	<TechLevelProgression.TechLevelProgressReport.Tooltip>Show current tech level progress.</TechLevelProgression.TechLevelProgressReport.Tooltip>
 
 </LanguageData>

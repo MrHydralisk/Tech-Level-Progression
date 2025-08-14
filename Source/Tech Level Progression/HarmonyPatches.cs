@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
+using static HarmonyLib.Code;
 
 namespace TechLevelProgression
 {
@@ -22,11 +23,13 @@ namespace TechLevelProgression
             patchType = typeof(HarmonyPatches);
             progress = AccessTools.FieldRefAccess<Dictionary<ResearchProjectDef, float>>(typeof(ResearchManager), "progress");
             Harmony val = new Harmony("rimworld.mrhydralisk.techlevelprogression");
-            val.Patch((MethodBase)AccessTools.Method(typeof(ResearchManager), "ReapplyAllMods", (Type[])null, (Type[])null), (HarmonyMethod)null, new HarmonyMethod(patchType, "ReapplyAllMods_Postfix", (Type[])null), (HarmonyMethod)null, (HarmonyMethod)null);
+            val.Patch(AccessTools.Method(typeof(ResearchManager), "ReapplyAllMods"), postfix: new HarmonyMethod(patchType, "ReapplyAllMods_Postfix"));
             val.Patch(AccessTools.Method(typeof(ResearchProjectDef), "CostFactor"), prefix: new HarmonyMethod(patchType, "RPD_CostFactor_Prefix"));
             val.Patch(AccessTools.Property(typeof(ResearchProjectDef), "CostApparent").GetGetMethod(), postfix: new HarmonyMethod(patchType, "RPD_CostApparent_Postfix"));
             val.Patch(AccessTools.Property(typeof(ResearchProjectDef), "ProgressApparent").GetGetMethod(), postfix: new HarmonyMethod(patchType, "RPD_CostApparent_Postfix"));
             val.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawProjectScrollView"), transpiler: new HarmonyMethod(patchType, "MTWR_DrawProjectScrollView_Transpiler"));
+            val.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawCurrentTabInfo"), postfix: new HarmonyMethod(patchType, "MTWR_DrawCurrentTabInfo_Postfix"));
+            val.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawProjectInfo"), postfix: new HarmonyMethod(patchType, "MTWR_DrawProjectInfo_Postfix"));
         }
 
         public static void ReapplyAllMods_Postfix(ResearchManager __instance)
@@ -39,14 +42,12 @@ namespace TechLevelProgression
                 isAnimalTL = false;
                 leftTechLevels = leftTechLevels.Where((TechLevel tl) => (int)tl > (int)currTechLevel);
             }
-            string tlprogress = "";
             foreach (TechLevel tl in leftTechLevels)
             {
                 int currR = -1, allR = -1;
                 ref Dictionary<ResearchProjectDef, float> reference = ref progress.Invoke((object)__instance);
                 currR = reference.Count(rp => rp.Key.techLevel == tl && rp.Key.IsFinished);
                 allR = DefDatabase<ResearchProjectDef>.AllDefs.Count((ResearchProjectDef rpd) => rpd.techLevel == tl);
-                tlprogress += "\n" + tl.ToStringSafe() + " progress " + currR.ToStringSafe() + " / " + allR.ToStringSafe();
                 if ((currR > 0) && (allR > 0) && (currR / (float)allR >= (TechLevelProgressionMod.Settings.TechLevelPrecise ? TechLevelProgressionMod.Settings.ResearchPercentPrecise[(int)tl] : TechLevelProgressionMod.Settings.ResearchPercent)))
                 {
                     isAnimalTL = false;
@@ -60,7 +61,6 @@ namespace TechLevelProgression
             {
                 Faction.OfPlayer.def.techLevel = (TechLevel)Mathf.Max((byte)TechLevelProgressionMod.Settings.TechLevelRange.min, (byte)TechLevel.Animal);
             }
-            Log.Message("Current tech level " + Faction.OfPlayer.def.techLevel.ToStringSafe() + tlprogress);
         }
 
         public static bool RPD_CostFactor_Prefix(ref float __result, ResearchProjectDef __instance, TechLevel researcherTechLevel)
@@ -136,7 +136,22 @@ namespace TechLevelProgression
             {
                 text += " " + "ResearchCostComparison".Translate(selectedProject.Cost.ToString("F0"), selectedProject.CostApparent.ToString("F0"));
             }
+            if (selectedProject.techLevel == TechLevel.Undefined)
+            {
+                text = string.Empty;
+            }
             return text;
+        }
+
+        public static void MTWR_DrawCurrentTabInfo_Postfix(MainTabWindow_Research __instance, Rect rect)
+        {
+            TechLevelProgressionMod.Instance.DrawTechLevelProgress(new Rect(rect.xMax - 56f, rect.height -56f, 64f, 64f));
+        }
+
+        public static void MTWR_DrawProjectInfo_Postfix(MainTabWindow_Research __instance, Rect rect)
+        {
+            float num = ((!ModsConfig.AnomalyActive || __instance.CurTab != ResearchTabDefOf.Anomaly) ? 100f : 150f);
+            TechLevelProgressionMod.Instance.DrawTechLevelProgress(new Rect(rect.xMax - 56f, rect.height - num - 8f, 64f, 64f));
         }
     }
 }
