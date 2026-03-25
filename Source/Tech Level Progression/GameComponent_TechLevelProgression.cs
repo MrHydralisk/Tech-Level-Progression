@@ -36,7 +36,7 @@ namespace TechLevelProgression
 
         public void UpdateTechLevel()
         {
-            IEnumerable<TechLevel> leftTechLevels = TechLevelProgressionMod.Instance.researchProjectsTechLevel.Keys.OrderByDescending((TechLevel tl) => tl);
+            IEnumerable<TechLevel> leftTechLevels = TechLevelProgressionMod.Instance.researchProjectsTechLevel.Keys.Where((TechLevel tl) => (int)tl >= TechLevelProgressionMod.Settings.TechLevelRange.min && (int)tl <= TechLevelProgressionMod.Settings.TechLevelRange.max).OrderByDescending((TechLevel tl) => tl);
             TechLevel newTL = TechLevel.Animal;
             if (!TechLevelProgressionMod.Settings.TechLevelDecrease)
             {
